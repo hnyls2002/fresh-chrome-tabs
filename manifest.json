@@ -1,0 +1,41 @@
+{
+  "manifest_version": 3,
+  "name": "Fresh Tabs",
+  "version": "0.1.0",
+  "description": "Keyboard-first tab housekeeping. Closes duplicate tabs using per-site URL rules, with one-key undo.",
+  "minimum_chrome_version": "116",
+  "permissions": ["tabs", "storage"],
+  "background": {
+    "service_worker": "worker.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "Close duplicate tabs in this window",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "commands": {
+    "_execute_action": {
+      "suggested_key": { "default": "Alt+Shift+D" },
+      "description": "Close duplicate tabs in the current window"
+    },
+    "dedup-all-windows": {
+      "suggested_key": { "default": "Alt+Shift+A" },
+      "description": "Close duplicate tabs across all windows"
+    },
+    "undo-last-dedup": {
+      "suggested_key": { "default": "Alt+Shift+Z" },
+      "description": "Reopen the tabs closed by the last run"
+    }
+  }
+}
