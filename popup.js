@@ -29,10 +29,11 @@ async function render() {
     : "No duplicates here";
   el("close-window").disabled = winDoomed === 0;
 
-  el("close-all").textContent = allDoomed
-    ? `All windows (${allDoomed})`
-    : "All windows";
-  el("close-all").disabled = allDoomed === 0;
+  // Only worth offering when it closes more than the current-window button.
+  const extra = allDoomed - winDoomed;
+  el("close-all").textContent =
+    extra > 0 ? `All windows (+${extra})` : "All windows";
+  el("close-all").disabled = extra <= 0;
 
   el("undo").textContent = undoable ? `Undo (${undoable})` : "Undo";
   el("undo").disabled = undoable === 0;
@@ -87,8 +88,11 @@ function shortLabel(key) {
 function wire(id, action) {
   el(id).addEventListener("click", async () => {
     el(id).disabled = true;
-    await action();
-    await render();
+    try {
+      await action();
+    } finally {
+      await render();
+    }
   });
 }
 

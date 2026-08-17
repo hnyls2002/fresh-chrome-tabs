@@ -156,6 +156,18 @@ test("groups report one keeper and the rest doomed", () => {
   assert.ok(!groups.some((g) => g.key?.startsWith("chrome")));
 });
 
+test("a still-loading tab is matched by its pendingUrl", () => {
+  const tabs = [
+    tab(1, "https://a.com/x"),
+    { ...tab(2, ""), pendingUrl: "https://a.com/x" },
+  ];
+  const closed = planDedup(tabs, { global: DEFAULT_RULE, sites: {} });
+  assert.deepEqual(
+    closed.map((t) => t.id),
+    [2],
+  );
+});
+
 test("a single tab is never a duplicate of itself", () => {
   assert.deepEqual(planDedup([tab(1, "https://a.com")], {}), []);
   assert.deepEqual(planDedup([], {}), []);
