@@ -1,0 +1,8 @@
+{
+  "name": "fresh-chrome-tabs",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test"
+  }
+}
