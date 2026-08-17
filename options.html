@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Fresh Tabs -- Settings</title>
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>Fresh Tabs</h1>
+        <p class="sub">
+          Settings for <b>close duplicate tabs</b>. Changes save automatically;
+          the preview below updates as you edit.
+        </p>
+      </header>
+
+      <section>
+        <h2>Global rules</h2>
+        <p class="hint">
+          Applied to every site unless a per-site rule below overrides it.
+        </p>
+
+        <div class="field">
+          <span class="label">Query string</span>
+          <div class="radios" id="global-query-mode">
+            <label
+              ><input type="radio" name="qmode" value="keep" /> Keep all
+              <em>two URLs differing in any param are different pages</em></label
+            >
+            <label
+              ><input type="radio" name="qmode" value="drop" /> Ignore all
+              <em>?a=1 and ?a=2 count as the same page</em></label
+            >
+            <label
+              ><input type="radio" name="qmode" value="allowlist" /> Allowlist
+              only <em>set the params per site below</em></label
+            >
+          </div>
+        </div>
+
+        <div class="checks">
+          <label
+            ><input type="checkbox" data-global="ignoreHash" /> Ignore
+            <code>#hash</code></label
+          >
+          <label
+            ><input type="checkbox" data-global="ignorePathname" /> Ignore path
+            <em>same host = same page</em></label
+          >
+          <label
+            ><input type="checkbox" data-global="stripTracking" /> Strip
+            tracking params <em>utm_*, fbclid, gclid, ...</em></label
+          >
+          <label
+            ><input type="checkbox" data-global="ignoreTrailingSlash" /> Ignore
+            trailing slash</label
+          >
+          <label
+            ><input type="checkbox" data-global="ignoreWww" /> Ignore
+            <code>www.</code></label
+          >
+          <label
+            ><input type="checkbox" data-global="sortParams" /> Ignore param
+            order</label
+          >
+          <label class="danger"
+            ><input type="checkbox" data-root="includePinned" /> Also close
+            pinned tabs</label
+          >
+        </div>
+      </section>
+
+      <section>
+        <h2>Per-site rules</h2>
+        <p class="hint">
+          Pick from the sites you currently have open -- no typing needed.
+        </p>
+
+        <div class="add-row">
+          <select id="origin-picker"></select>
+          <button id="add-site" type="button">Add rule</button>
+        </div>
+
+        <div id="site-list"></div>
+      </section>
+
+      <section>
+        <h2>Preview</h2>
+        <p class="hint">
+          What would happen right now, across all windows, with the rules above.
+        </p>
+        <div id="preview-summary" class="summary"></div>
+        <div id="preview-groups"></div>
+      </section>
+
+      <section>
+        <h2>Shortcuts</h2>
+        <table class="keys">
+          <tbody>
+            <tr>
+              <td><kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>D</kbd></td>
+              <td>Dedup the current window</td>
+            </tr>
+            <tr>
+              <td><kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>A</kbd></td>
+              <td>Dedup every window</td>
+            </tr>
+            <tr>
+              <td><kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd></td>
+              <td>Undo the last run</td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="hint">
+          On macOS <kbd>Alt</kbd> is <kbd>Option</kbd>. Rebind them at
+          <code>chrome://extensions/shortcuts</code> (paste it in the address
+          bar -- links to chrome:// pages cannot be clicked).
+        </p>
+      </section>
+    </main>
+
+    <template id="site-row">
+      <div class="site">
+        <div class="site-head">
+          <code class="origin"></code>
+          <button class="remove" type="button">Remove</button>
+        </div>
+        <div class="site-body">
+          <label
+            >Query
+            <select class="qmode">
+              <option value="">inherit global</option>
+              <option value="keep">keep all</option>
+              <option value="drop">ignore all</option>
+              <option value="allowlist">allowlist only</option>
+            </select>
+          </label>
+          <label class="allow"
+            >Keep only
+            <input
+              class="allowed"
+              type="text"
+              placeholder="v, list, t"
+              spellcheck="false"
+            />
+          </label>
+          <label
+            ><input type="checkbox" class="ignoreHash" /> ignore hash</label
+          >
+          <label
+            ><input type="checkbox" class="ignorePathname" /> ignore path</label
+          >
+        </div>
+      </div>
+    </template>
+
+    <script type="module" src="options.js"></script>
+  </body>
+</html>
