@@ -1,17 +1,11 @@
 import { groupDuplicates } from "./lib/normalize.js";
 import { loadConfig } from "./lib/config.js";
-import {
-  dedup,
-  undoLast,
-  undoableCount,
-  SCOPE_ALL,
-  SCOPE_WINDOW,
-} from "./features/dedup.js";
+import { dedup, SCOPE_ALL, SCOPE_WINDOW } from "./features/dedup.js";
 
 const el = (id) => document.getElementById(id);
 
 async function render() {
-  const [config, undoable] = await Promise.all([loadConfig(), undoableCount()]);
+  const config = await loadConfig();
   const [winTabs, allTabs] = await Promise.all([
     chrome.tabs.query({ currentWindow: true }),
     chrome.tabs.query({}),
@@ -34,9 +28,6 @@ async function render() {
   el("close-all").textContent =
     extra > 0 ? `All windows (+${extra})` : "All windows";
   el("close-all").disabled = extra <= 0;
-
-  el("undo").textContent = undoable ? `Undo (${undoable})` : "Undo";
-  el("undo").disabled = undoable === 0;
 }
 
 const countDoomed = (groups) => groups.reduce((n, g) => n + g.doomed.length, 0);
@@ -98,7 +89,6 @@ function wire(id, action) {
 
 wire("close-window", () => dedup(SCOPE_WINDOW));
 wire("close-all", () => dedup(SCOPE_ALL));
-wire("undo", () => undoLast());
 
 el("settings").addEventListener("click", () => {
   chrome.runtime.openOptionsPage();

@@ -119,12 +119,6 @@ h1 {
   gap: 6px;
 }
 
-.row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 6px;
-}
-
 button {
   font: inherit;
   color: var(--fg);

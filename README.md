@@ -12,8 +12,7 @@ Click the toolbar icon to open the panel. It lists what would close before you
 close anything:
 
 - **Close N duplicates** -- current window
-- **All windows (N)** -- every window at once
-- **Undo (N)** -- reopens exactly what the last run closed
+- **All windows (+N)** -- also the duplicates in every other window
 
 Of each duplicate group one tab survives: pinned first, then active, then
 leftmost. Pinned tabs are skipped entirely unless you opt in, and `chrome://` /
