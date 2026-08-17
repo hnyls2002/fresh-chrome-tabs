@@ -27,7 +27,6 @@ chrome.tabs.onUpdated.addListener((_id, changeInfo) => {
   if (changeInfo.url) refreshBadge();
 });
 
-// Editing the matching rules changes the count without any tab moving.
 chrome.storage.onChanged.addListener(refreshBadge);
 
 refreshBadge();

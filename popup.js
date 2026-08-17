@@ -1,8 +1,13 @@
 import { groupDuplicates } from "./lib/normalize.js";
 import { loadConfig } from "./lib/config.js";
+import { groupGithubEntities } from "./lib/github.js";
 import { dedup, SCOPE_ALL, SCOPE_WINDOW } from "./features/dedup.js";
+import { collapseGroups } from "./features/collapse.js";
 
 const el = (id) => document.getElementById(id);
+const countDoomed = (groups) => groups.reduce((n, g) => n + g.doomed.length, 0);
+
+let pendingCollapse = [];
 
 async function render() {
   const config = await loadConfig();
@@ -11,27 +16,50 @@ async function render() {
     chrome.tabs.query({}),
   ]);
 
+  renderDuplicates(winTabs, allTabs, config);
+  renderCollapse(winTabs, config);
+}
+
+function renderDuplicates(winTabs, allTabs, config) {
   const winGroups = groupDuplicates(winTabs, config);
-  const allDoomed = countDoomed(groupDuplicates(allTabs, config));
   const winDoomed = countDoomed(winGroups);
+  const allDoomed = countDoomed(groupDuplicates(allTabs, config));
 
   renderSummary(winDoomed, winTabs.length);
-  renderGroups(winGroups);
+  el("groups").replaceChildren(
+    ...[...winGroups]
+      .sort((a, b) => b.doomed.length - a.doomed.length)
+      .map((g) => buildRow(shortLabel(g.key), g.doomed.length, g.key)),
+  );
 
   el("close-window").textContent = winDoomed
     ? `Close ${winDoomed} duplicate${winDoomed > 1 ? "s" : ""}`
     : "No duplicates here";
   el("close-window").disabled = winDoomed === 0;
 
-  // Only worth offering when it closes more than the current-window button,
-  // which is also why showing the total here can never repeat that button's.
+  // Disabled unless it beats the button above, which is what makes showing the
+  // total here safe: the two numbers can never come out equal.
   const extra = allDoomed - winDoomed;
   el("close-all").textContent =
     extra > 0 ? `Close ${allDoomed} in all windows` : "All windows";
   el("close-all").disabled = extra <= 0;
 }
 
-const countDoomed = (groups) => groups.reduce((n, g) => n + g.doomed.length, 0);
+function renderCollapse(tabs, config) {
+  const groups = groupGithubEntities(tabs, config.includePinned);
+  const total = countDoomed(groups);
+
+  pendingCollapse = groups;
+  el("collapse").hidden = total === 0;
+  if (total === 0) return;
+
+  el("collapse-groups").replaceChildren(
+    ...[...groups]
+      .sort((a, b) => b.doomed.length - a.doomed.length)
+      .map((g) => buildRow(g.label, g.doomed.length, g.keeper.title || g.label)),
+  );
+  el("collapse-btn").textContent = `Collapse ${total} tab${total > 1 ? "s" : ""}`;
+}
 
 function renderSummary(doomed, total) {
   const summary = el("summary");
@@ -44,25 +72,17 @@ function renderSummary(doomed, total) {
   summary.innerHTML = `<b>${doomed}</b> of ${total} tabs in this window are duplicates.`;
 }
 
-function renderGroups(groups) {
-  el("groups").replaceChildren(
-    ...[...groups]
-      .sort((a, b) => b.doomed.length - a.doomed.length)
-      .map(buildRow),
-  );
-}
-
-function buildRow(group) {
+function buildRow(labelText, doomedCount, titleText) {
   const li = document.createElement("li");
 
   const label = document.createElement("span");
   label.className = "label";
-  label.textContent = shortLabel(group.key);
-  label.title = group.keeper.title || group.key;
+  label.textContent = labelText;
+  label.title = titleText;
 
   const count = document.createElement("span");
   count.className = "count";
-  count.textContent = `-${group.doomed.length}`;
+  count.textContent = `-${doomedCount}`;
 
   li.append(label, count);
   return li;
@@ -90,6 +110,7 @@ function wire(id, action) {
 
 wire("close-window", () => dedup(SCOPE_WINDOW));
 wire("close-all", () => dedup(SCOPE_ALL));
+wire("collapse-btn", () => collapseGroups(pendingCollapse));
 
 el("settings").addEventListener("click", () => {
   chrome.runtime.openOptionsPage();

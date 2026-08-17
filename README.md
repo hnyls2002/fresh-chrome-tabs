@@ -20,6 +20,24 @@ Of each duplicate group one tab survives: pinned first, then active, then
 leftmost. Pinned tabs are skipped entirely unless you opt in, and `chrome://` /
 `file://` / `about:blank` never take part.
 
+## Same GitHub PR
+
+A second section appears when several tabs point at one GitHub PR, issue, or
+workflow run. These are **not** duplicates by URL and the buttons above never
+touch them -- collapsing is a separate, deliberate click.
+
+```
+/sgl-project/sglang/pull/33907          -.
+/sgl-project/sglang/pull/33907/files      |- one PR
+/sgl-project/sglang/pull/33907/commits  -'
+
+/sgl-project/sglang/actions/runs/316/job/944  -.
+/sgl-project/sglang/actions/runs/316/job/955  -'  one run
+```
+
+Grouping is purely a matter of URL shape -- no network, no extra permission. A
+workflow run is its own subject, never folded into the PR that triggered it.
+
 **Settings** (top-right of the panel, or right-click the icon -> Options) holds
 the matching rules -- global switches plus per-site overrides, picked from the
 sites you have open rather than typed. That page previews a run too, live as you
