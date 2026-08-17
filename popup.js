@@ -23,10 +23,11 @@ async function render() {
     : "No duplicates here";
   el("close-window").disabled = winDoomed === 0;
 
-  // Only worth offering when it closes more than the current-window button.
+  // Only worth offering when it closes more than the current-window button,
+  // which is also why showing the total here can never repeat that button's.
   const extra = allDoomed - winDoomed;
   el("close-all").textContent =
-    extra > 0 ? `All windows (+${extra})` : "All windows";
+    extra > 0 ? `Close ${allDoomed} in all windows` : "All windows";
   el("close-all").disabled = extra <= 0;
 }
 

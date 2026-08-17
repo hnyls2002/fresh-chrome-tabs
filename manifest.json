@@ -5,6 +5,10 @@
   "description": "Finds duplicate tabs, shows what would close, and closes them on one click. Matching rules are configurable per site.",
   "minimum_chrome_version": "116",
   "permissions": ["tabs", "storage"],
+  "background": {
+    "service_worker": "worker.js",
+    "type": "module"
+  },
   "action": {
     "default_title": "Fresh Tabs",
     "default_popup": "popup.html",

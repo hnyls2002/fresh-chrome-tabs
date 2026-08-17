@@ -8,11 +8,13 @@ Closes duplicate tabs. Two tabs are duplicates when their URLs match after
 normalization: `#hash` ignored, tracking params (`utm_*`, `fbclid`, ...)
 stripped, param order and trailing slash ignored.
 
-Click the toolbar icon to open the panel. It lists what would close before you
-close anything:
+The toolbar badge always shows how many duplicates the focused window has right
+now; no badge means none. Click the icon to open the panel, which lists what
+would close before you close anything:
 
 - **Close N duplicates** -- current window
-- **All windows (+N)** -- also the duplicates in every other window
+- **Close N in all windows** -- every window at once, shown only when it would
+  close more than the button above
 
 Of each duplicate group one tab survives: pinned first, then active, then
 leftmost. Pinned tabs are skipped entirely unless you opt in, and `chrome://` /
