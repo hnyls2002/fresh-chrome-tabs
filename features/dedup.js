@@ -32,6 +32,11 @@ export async function dedup(scope) {
   return doomed.length;
 }
 
+export async function undoableCount() {
+  const closed = (await chrome.storage.session.get(UNDO_KEY))[UNDO_KEY];
+  return closed?.length ?? 0;
+}
+
 export async function undoLast() {
   const closed = (await chrome.storage.session.get(UNDO_KEY))[UNDO_KEY];
   if (!closed?.length) {

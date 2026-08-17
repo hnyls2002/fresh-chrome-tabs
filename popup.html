@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Fresh Tabs</h1>
+      <button id="settings" type="button" title="Settings">Settings</button>
+    </header>
+
+    <p id="summary" class="summary">Scanning...</p>
+
+    <ul id="groups"></ul>
+
+    <div class="actions">
+      <button id="close-window" type="button" class="primary" disabled>
+        Close duplicates
+      </button>
+      <div class="row">
+        <button id="close-all" type="button" disabled>All windows</button>
+        <button id="undo" type="button" disabled>Undo</button>
+      </div>
+    </div>
+
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>
